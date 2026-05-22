@@ -1,0 +1,77 @@
+name: "Docker"
+
+on:
+  workflow_dispatch:
+
+  push:
+
+  schedule:
+    - cron: "0 8 * * 1"
+
+permissions:
+  contents: read
+
+env:
+  TIMESCALEDB_HA_TAG: "pg18-ts2.26"
+
+jobs:
+  test:
+    name: "Test"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build image for testing
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: dockette/timescaledb:ha-${{ env.TIMESCALEDB_HA_TAG }}-test
+          platforms: linux/amd64
+          load: true
+          build-args: |
+            TIMESCALEDB_HA_TAG=${{ env.TIMESCALEDB_HA_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test image
+        run: |
+          docker run --rm dockette/timescaledb:ha-${{ env.TIMESCALEDB_HA_TAG }}-test postgres --version
+          docker run --rm --entrypoint ls dockette/timescaledb:ha-${{ env.TIMESCALEDB_HA_TAG }}-test /docker-entrypoint-initdb.d/020_dockette_extensions.sql
+
+  build:
+    name: "Build"
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          push: ${{ github.ref == 'refs/heads/master' }}
+          tags: |
+            dockette/timescaledb:ha-${{ env.TIMESCALEDB_HA_TAG }}
+            dockette/timescaledb:latest
+          platforms: linux/amd64
+          build-args: |
+            TIMESCALEDB_HA_TAG=${{ env.TIMESCALEDB_HA_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
