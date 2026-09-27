@@ -1,4 +1,4 @@
-ARG TIMESCALEDB_HA_TAG=pg18-ts2.26
+ARG TIMESCALEDB_HA_TAG=pg18-ts2.30
 
 FROM timescale/timescaledb-ha:${TIMESCALEDB_HA_TAG}
 

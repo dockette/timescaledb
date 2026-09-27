@@ -1,7 +1,7 @@
 <h1 align=center>Dockette / TimescaleDB</h1>
 
 <p align=center>
-   Minimal Docker image wrapping <a href="https://github.com/timescale/timescaledb-docker-ha">TimescaleDB HA</a> (<code>timescale/timescaledb-ha</code>) under <code>dockette/timescaledb</code> on Docker Hub. Tags use the <code>ha-</code> prefix for the HA image line (e.g. <code>ha-pg18-ts2.26</code> → upstream <code>timescale/timescaledb-ha:pg18-ts2.26</code>).
+   Minimal Docker image wrapping <a href="https://github.com/timescale/timescaledb-docker-ha">TimescaleDB HA</a> (<code>timescale/timescaledb-ha</code>) under <code>dockette/timescaledb</code> on Docker Hub. Tags use the <code>ha-</code> prefix for the HA image line (e.g. <code>ha-pg18-ts2.30</code> → upstream <code>timescale/timescaledb-ha:pg18-ts2.30</code>).
 </p>
 
 <p align=center>
@@ -30,7 +30,7 @@ Example matching the [upstream HA image layout](https://github.com/timescale/tim
 docker run --name some-timescaledb -p 5432:5432 \
   -e POSTGRES_PASSWORD=secret \
   -v tsdb-data:/home/postgres/pgdata \
-  dockette/timescaledb:ha-pg18-ts2.26
+  dockette/timescaledb:ha-pg18-ts2.30
 ```
 
 Listen port is **5432**. For a custom data path (e.g. Nomad mounting `/pgdata`), set **`PGDATA`** accordingly (for example `/pgdata/data` if that is where PostgreSQL should store cluster files).
@@ -51,7 +51,7 @@ After `make build`, you can run a one-off container with a fresh volume, `POSTGR
 
 | Image tag | Equivalent upstream |
 |-----------|---------------------|
-| `dockette/timescaledb:ha-pg18-ts2.26` | `timescale/timescaledb-ha:pg18-ts2.26` |
+| `dockette/timescaledb:ha-pg18-ts2.30` | `timescale/timescaledb-ha:pg18-ts2.30` |
 | `dockette/timescaledb:latest` | same as current CI pin (rolling) |
 
 This image is a **thin republish**: `FROM timescale/timescaledb-ha:${TIMESCALEDB_HA_TAG}` plus bundled init SQL.

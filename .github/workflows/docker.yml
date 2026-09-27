@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 env:
-  TIMESCALEDB_HA_TAG: "pg18-ts2.26"
+  TIMESCALEDB_HA_TAG: "pg18-ts2.30"
 
 jobs:
   test:
