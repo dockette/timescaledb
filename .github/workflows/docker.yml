@@ -75,3 +75,12 @@ jobs:
             TIMESCALEDB_HA_TAG=${{ env.TIMESCALEDB_HA_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  docs:
+    name: "Docs"
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    uses: dockette/.github/.github/workflows/dockerhub-description.yml@master
+    secrets: inherit
+    with:
+      image: "dockette/timescaledb"
