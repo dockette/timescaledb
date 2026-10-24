@@ -54,6 +54,9 @@ After `make build`, you can run a one-off container with a fresh volume, `POSTGR
 | `dockette/timescaledb:ha-pg18-ts2.30` | `timescale/timescaledb-ha:pg18-ts2.30` |
 | `dockette/timescaledb:latest` | same as current CI pin (rolling) |
 
+The release version is the date in [`VERSION`](VERSION). CI pushes `latest` also as `dockette/timescaledb:<VERSION>`.
+To release, run `make release`, commit and push to `master`.
+
 This image is a **thin republish**: `FROM timescale/timescaledb-ha:${TIMESCALEDB_HA_TAG}` plus bundled init SQL.
 
 -----
