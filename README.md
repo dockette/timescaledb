@@ -49,13 +49,17 @@ After `make build`, you can run a one-off container with a fresh volume, `POSTGR
 
 ## Versions
 
-| Image tag | Equivalent upstream |
-|-----------|---------------------|
-| `dockette/timescaledb:ha-pg18-ts2.30` | `timescale/timescaledb-ha:pg18-ts2.30` |
-| `dockette/timescaledb:latest` | same as current CI pin (rolling) |
+`timescale/timescaledb-ha:pg18-ts2.30` is the upstream image.
 
-The release version is the date in [`VERSION`](VERSION). CI pushes `latest` also as `dockette/timescaledb:<VERSION>`.
-To release, run `make release`, commit and push to `master`.
+| Tag | What it is |
+|-----|------------|
+| `dockette/timescaledb:latest` | latest build of `master` |
+| `dockette/timescaledb:2026.10.23` | release `2026.10.23` |
+| `dockette/timescaledb:ha-pg18-ts2.30` | latest build with TimescaleDB HA `pg18-ts2.30` |
+| `dockette/timescaledb:ha-pg18-ts2.30-2026.10.23` | TimescaleDB HA `pg18-ts2.30` in release `2026.10.23`; pin this one |
+
+The release version is the date in [`VERSION`](VERSION). The upstream tag is pinned in the workflow (`TIMESCALEDB_HA_TAG`). On `master`, CI pushes the `latest` image under the four tags above.
+To release, run `make release`, commit and push to `master`. A TimescaleDB upgrade is a release too.
 
 This image is a **thin republish**: `FROM timescale/timescaledb-ha:${TIMESCALEDB_HA_TAG}` plus bundled init SQL.
 

@@ -75,6 +75,7 @@ jobs:
             dockette/timescaledb:ha-${{ env.TIMESCALEDB_HA_TAG }}
             dockette/timescaledb:latest
             dockette/timescaledb:${{ steps.version.outputs.version }}
+            dockette/timescaledb:ha-${{ env.TIMESCALEDB_HA_TAG }}-${{ steps.version.outputs.version }}
           platforms: linux/amd64
           build-args: |
             TIMESCALEDB_HA_TAG=${{ env.TIMESCALEDB_HA_TAG }}
@@ -95,7 +96,9 @@ jobs:
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release view "$(cat VERSION)" || gh release create "$(cat VERSION)" --generate-notes
+        run: |
+          v="$(cat VERSION)"
+          gh release view "$v" || gh release create "$v" --title "$v (TimescaleDB $TIMESCALEDB_HA_TAG)" --generate-notes
 
   docs:
     name: "Docs"
