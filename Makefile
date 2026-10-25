@@ -1,5 +1,7 @@
 DOCKER_IMAGE=dockette/timescaledb
-TIMESCALEDB_HA_TAG?=pg18-ts2.30
+
+include VERSION
+
 DOCKER_TAG?=ha-$(TIMESCALEDB_HA_TAG)
 DOCKER_PLATFORMS?=linux/amd64
 
@@ -14,3 +16,12 @@ build:
 test:
 	docker run --rm --platform ${DOCKER_PLATFORMS} ${DOCKER_IMAGE}:${DOCKER_TAG} postgres --version
 	docker run --rm --platform ${DOCKER_PLATFORMS} --entrypoint ls ${DOCKER_IMAGE}:${DOCKER_TAG} /docker-entrypoint-initdb.d/020_dockette_extensions.sql
+
+.PHONY: version
+version:
+	@echo ${VERSION}
+
+.PHONY: release
+release:
+	@sed -i.bak "s/^VERSION=.*/VERSION=$$(date -u +%Y.%m.%d)/" VERSION && rm VERSION.bak
+	@cat VERSION
